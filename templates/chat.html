@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HotelBot - Web Chat</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 30px; background: #f5f5f5; }
+        #chatbox { width: 500px; height: 400px; border: 1px solid #ccc; padding: 10px; overflow-y: scroll; background: white; }
+        #input { margin-top: 10px; }
+        input[type=text] { width: 400px; padding: 10px; font-size: 16px; }
+        input[type=submit] { padding: 10px 20px; }
+    </style>
+</head>
+<body>
+    <h2>Welcome to The Velvet Orchid Helpdesk</h2>
+    <p style="font-size: 14px; color: #666;">This service is brought to you by Saifullah Khalid. Feel free to ask any queries you have about our hotel services.</p>
+    <div id="chatbox"></div>
+
+    <form id="chat-form">
+        <div id="input">
+            <input type="text" id="user-input" placeholder="How can we assist you today?" autocomplete="off">
+            <input type="submit" value="Send">
+        </div>
+    </form>
+
+    <script>
+        document.getElementById('chat-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var user_input = document.getElementById('user-input').value;
+            document.getElementById('chatbox').innerHTML += '<div><strong>User:</strong> ' + user_input + '</div>';
+
+            fetch('/get', {
+                method: 'POST',
+                body: new URLSearchParams({ 'msg': user_input })
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('chatbox').innerHTML += '<div><strong>Bot:</strong> ' + data + '</div>';
+                document.getElementById('user-input').value = '';
+                window.scrollTo(0, document.body.scrollHeight);
+            });
+        });
+    </script>
+</body>
+</html>
